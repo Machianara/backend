@@ -9,6 +9,9 @@ import Metric from "./src/models/metric.js";
 import Prediction from "./src/models/prediction.js";
 import User from "./src/models/user.js";
 
+// Routes
+import authRoute from "./src/routes/authRoute.js";
+
 // Load environment variables
 dotenv.config();
 
@@ -22,11 +25,14 @@ sequelize
   .then(() => console.log("Database connected"))
   .catch((err) => console.error("Database connection failed:", err));
 
-// Sync models (create tables if not exist)
+// Sync models
 sequelize
   .sync({ alter: true })
   .then(() => console.log("Tables synced"))
   .catch((err) => console.error("Table sync failed:", err));
+
+// Register Routes
+app.use("/auth", authRoute);
 
 // Sample route
 app.get("/api/health", (req, res) => {
