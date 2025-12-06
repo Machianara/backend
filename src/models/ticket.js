@@ -1,3 +1,4 @@
+// src/models/ticket.js
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
 
@@ -17,6 +18,14 @@ const Ticket = sequelize.define("ticket", {
   status: {
     type: DataTypes.ENUM("open", "in_progress", "resolved"),
     defaultValue: "open",
+  },
+  auto_generated: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false, // manual ticket default false
+  },
+  priority: {
+    type: DataTypes.ENUM("low", "medium", "high"),
+    defaultValue: "medium",
   },
 });
 
