@@ -4,7 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import sequelize from "./src/config/database.js";
 
-// Models (pastikan semua model di-import sebelum sync)
+// Models 
 import "./src/models/ticket.js";
 
 // Routes
@@ -18,7 +18,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Root route (Wajib biar Railway gak tampil "Cannot GET /")
+// Root route
 app.get("/", (req, res) => {
   res.send("Machinara Ticketing API is running 🚀");
 });

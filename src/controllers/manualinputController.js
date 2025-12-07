@@ -1,88 +1,86 @@
 import fetch from "node-fetch";
 
+// Key: ML_API_URL, Value: http://ml-service:5001/predict
+const ML_API_URL = process.env.ML_API_URL || "http://localhost:5001/predict";
+
 /**
- * Manual input mesin → generate report
- * req.body: { machine_name: string }
+ * @route POST /api/manual-input
+ * @description Manual input mesin (Product ID) dan generate structured JSON report dari ML Service.
+ * @access Public
  */
 export const manualInputMachine = async (req, res) => {
+  const { machine_name } = req.body;
+
+  if (!machine_name) {
+    return res
+      .status(400)
+      .json({
+        error: "Input validation failed",
+        message: "machine_name (Product ID) is required.",
+      });
+  }
+
+  let mlResponse;
+  let mlData;
+
   try {
-    const { machine_name } = req.body;
+    // 1. Request ke ML API
+    console.log(
+      `[Backend] Requesting prediction for ID: ${machine_name} at ${ML_API_URL}`
+    );
 
-    if (!machine_name) {
-      return res.status(400).json({ error: "machine_name is required" });
-    }
-
-    // Request ke ML API
-    const mlResponse = await fetch("http://localhost:5001/predict", {
+    mlResponse = await fetch(ML_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ machine_name }),
+      timeout: 15000,
     });
 
-    const mlData = await mlResponse.json();
+    mlData = await mlResponse.json();
 
-    // Bangun report string
-    let report = "";
+    // 2. Penanganan Error dari ML API
+    if (!mlResponse.ok) {
+      const statusCode = mlResponse.status;
 
-    if (mlData.status === "RUSAK") {
-      report = `
-═════════════════════════════════════════════════════════════════
- LAPORAN LENGKAP MESIN: ${mlData.machine_name}
-═════════════════════════════════════════════════════════════════
- Tipe Mesin      : ${mlData.type}
- Suhu Proses     : ${mlData.temperature} K
- RPM             : ${mlData.rpm} rpm
- Torsi           : ${mlData.torque} Nm
- Tool Wear       : ${mlData.tool_wear} min
------------------------------------------------------------------
-[A] FAKTA DATASET
-   🔴 STATUS ASLI : ${mlData.status}
-    Penyebab Tercatat:
-      👉 ${mlData.cause}
------------------------------------------------------------------
-📋 FAKTOR PENYEBAB UTAMA:
-   👉 Mechanical Power W: ${mlData.factors.mechanical_power}
-      -> 🟡 Beban Tinggi: Pertimbangkan menurunkan RPM atau Torsi.
-   👉 temperature_difference: ${mlData.factors.temperature_difference}
-   👉 Rotational speed rpm: ${mlData.factors.rpm}
-      -> 📈 RPM TINGGI: Menambah panas dan getaran.
------------------------------------------------------------------
- ANALISIS DETAIL SEBAB-AKIBAT (SHAP):
- ${mlData.analysis || "Tidak ada analisis tambahan."}
-`;
-    } else if (mlData.status === "NORMAL") {
-      report = `
-Masukkan Product ID: ${mlData.machine_name}
+      const detailMessage =
+        mlData.detail || "Gagal memproses prediksi dari layanan ML.";
 
-═════════════════════════════════════════════════════════════════
- LAPORAN LENGKAP MESIN: ${mlData.machine_name}
-═════════════════════════════════════════════════════════════════
- Tipe Mesin      : ${mlData.type}
- Suhu Proses     : ${mlData.temperature} K
- RPM             : ${mlData.rpm} rpm
- Torsi           : ${mlData.torque} Nm
- Tool Wear       : ${mlData.tool_wear} min
------------------------------------------------------------------
-MENURUT DATASET
-   🟢 STATUS ASLI : ${mlData.status}
-       Mesin tercatat beroperasi normal.
------------------------------------------------------------------
-   ✅ Mesin ini aman. Silakan cek grafik untuk detail kestabilan.
- VISUALISASI KONTRIBUSI FITUR (SHAP):
- ${mlData.analysis || "Tidak ada analisis tambahan."}
-`;
-    } else {
-      report = `Status mesin tidak dikenali.`;
+      console.error(
+        `[ML Service Error] Status ${statusCode}: ${detailMessage}`
+      );
+
+      return res.status(statusCode).json({
+        error: "ML Service Error",
+        message: detailMessage,
+        status_code_from_ml: statusCode,
+      });
     }
 
-    // Kembalikan JSON
+    // 3. Mengembalikan JSON Terstruktur
     res.json({
-      machine_name: mlData.machine_name,
-      status: mlData.status,
-      report,
+      status: "success",
+      product_id: mlData.machine_name,
+      report_data: {
+        mesin: mlData.detail_mesin,
+        prediksi: {
+          status: mlData.status,
+          status_asli: mlData.status_asli,
+        },
+        analisis: {
+          faktor_penyebab: mlData.faktor_penyebab,
+          visualisasi_shap: mlData.visualisasi_shap,
+        },
+      },
     });
   } catch (err) {
-    console.error("Manual Input Machine Error:", err);
-    res.status(500).json({ error: "Failed to generate machine report" });
+    console.error("Manual Input Machine Connection Error:", err.message);
+
+    res.status(503).json({
+      error: "Failed to connect to ML service",
+      message:
+        "Layanan prediksi mesin sedang tidak tersedia. Mohon cek ML API.",
+      detail: err.message,
+    });
   }
 };
+
