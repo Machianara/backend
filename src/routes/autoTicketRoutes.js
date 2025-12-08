@@ -4,7 +4,7 @@ import { createAutoTicket } from "../controllers/autoTicketController.js";
 
 const router = express.Router();
 
-// POST /api/auto-tickets/create-from-ai
-router.post("/create-from-ai", createAutoTicket);
+// Endpoint ini akan diakses lewat: POST /api/auto-tickets
+router.post("/", createAutoTicket);
 
 export default router;
