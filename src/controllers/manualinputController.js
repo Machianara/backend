@@ -3,9 +3,9 @@ import fetch from "node-fetch";
 const ML_API_URL = process.env.ML_API_URL || "http://localhost:5001/predict";
 
 /**
- * @route 
+ * @route
  * @description
- * @access 
+ * @access
  */
 export const manualInputMachine = async (req, res) => {
   const inputData = req.body;
@@ -98,7 +98,6 @@ export const manualInputMachine = async (req, res) => {
             "Mesin beroperasi normal atau AI Analysis tidak tersedia.",
 
           radar_chart: mlData.radar_chart_base64 || null,
-
 
           calculated_metrics: {
             power: mlData.calculated_metrics?.power,

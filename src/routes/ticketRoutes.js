@@ -6,13 +6,14 @@ import {
   updateTicket,
   deleteTicket,
 } from "../controllers/ticketController.js";
+import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createTicket);
-router.get("/", getTickets);
-router.get("/:id", getTicketById);
-router.put("/:id", updateTicket);
-router.delete("/:id", deleteTicket);
+router.post("/", verifyToken, createTicket);
+router.get("/", verifyToken, getTickets);
+router.get("/:id", verifyToken, getTicketById);
+router.put("/:id", verifyToken, updateTicket);
+router.delete("/:id", verifyToken, deleteTicket);
 
 export default router;

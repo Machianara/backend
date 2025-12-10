@@ -1,10 +1,10 @@
-// src/routes/autoTicketRoutes.js
 import express from "express";
 import { createAutoTicket } from "../controllers/autoTicketController.js";
+import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// POST /api/auto-tickets/create-from-ai
-router.post("/create-from-ai", createAutoTicket);
+// Endpoint ini akan diakses lewat: POST /api/auto-tickets - require token
+router.post("/", verifyToken, createAutoTicket);
 
 export default router;
