@@ -4,6 +4,6 @@ import { manualInputMachine } from "../controllers/manualinputController.js";
 const router = express.Router();
 
 // POST /manual-input
-router.post("/", manualInputMachine);
+router.post("/", verifyToken, manualInputMachine);
 
 export default router;
