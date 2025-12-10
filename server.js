@@ -11,6 +11,9 @@ import User from "./src/models/user.js";
 
 // Routes
 import authRoute from "./src/routes/authRoute.js";
+import ticketRoutes from "./src/routes/ticketRoutes.js";
+import autoTicketRoutes from "./src/routes/autoTicketRoutes.js";
+import manualinputRoutes from "./src/routes/manualinputRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -33,6 +36,9 @@ sequelize
 
 // Register Routes
 app.use("/auth", authRoute);
+app.use("/tickets", ticketRoutes);
+app.use("/auto-tickets", autoTicketRoutes);
+app.use("/manual-input", manualinputRoutes);
 
 // Sample route
 app.get("/api/health", (req, res) => {

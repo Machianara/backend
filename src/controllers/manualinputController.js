@@ -1,7 +1,5 @@
 // manualinputController.js
 
-import fetch from "node-fetch";
-
 // URL ML API. Ganti 'localhost:5001' dengan alamat IP atau domain ML Service saat deployment.
 const ML_API_URL = "http://localhost:5001/predict";
 
