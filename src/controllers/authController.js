@@ -35,7 +35,6 @@ export default {
         return res.status(400).json({ message: "Nama, nomor HP, dan password wajib diisi" });
       }
 
-      // Admin hanya bisa membuat akun dengan role "user"
       const newUser = await authService.createAccount(name, phone, password);
 
       return res.status(201).json({
@@ -54,14 +53,14 @@ export default {
 
   async updateProfile(req, res) {
     try {
-      const { name, biography } = req.body;
+      const { name, biography, password } = req.body;
       const userId = req.user.id;
 
-      if (!name && !biography) {
+      if (!name && !biography && !password) {
         return res.status(400).json({ message: "Minimal ada satu field yang harus diupdate" });
       }
 
-      const updatedUser = await authService.updateProfile(userId, name, biography);
+      const updatedUser = await authService.updateProfile(userId, name, biography, password);
 
       return res.json({
         message: "Profil berhasil diupdate",
@@ -94,17 +93,17 @@ export default {
   async updateUserByAdmin(req, res) {
     try {
       const { userId } = req.params;
-      const { name, biography, password } = req.body;
+      const { name, biography } = req.body;
 
       if (!userId) {
         return res.status(400).json({ message: "User ID wajib diisi" });
       }
 
-      if (!name && !biography && !password) {
+      if (!name && !biography) {
         return res.status(400).json({ message: "Minimal ada satu field yang harus diupdate" });
       }
 
-      const updatedUser = await authService.updateUserByAdmin(userId, name, biography, password);
+      const updatedUser = await authService.updateUserByAdmin(userId, name, biography);
 
       return res.json({
         message: "Data user berhasil diupdate",
