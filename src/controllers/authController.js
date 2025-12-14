@@ -11,16 +11,22 @@ export default {
 
       const result = await authService.login(phone, password);
 
+      const isUser = result.user.role === "user";
+      const responseUser = {
+        id: result.user.id,
+        name: result.user.name,
+        phone: result.user.phone,
+        role: result.user.role
+      };
+
+      if (isUser) {
+        responseUser.biography = result.user.biography;
+      }
+
       return res.json({
         message: "Login berhasil",
         token: result.token,
-        user: {
-          id: result.user.id,
-          name: result.user.name,
-          phone: result.user.phone,
-          biography: result.user.biography,
-          role: result.user.role
-        }
+        user: responseUser
       });
     } catch (err) {
       return res.status(401).json({ message: err.message });
