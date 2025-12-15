@@ -24,5 +24,6 @@ export const setupSwagger = (app) => {
     customSiteTitle: "Machinara API Documentation",
   }));
 
-  console.log("✅ Swagger UI tersedia di http://localhost:3000/api-docs");
+  const PORT = process.env.PORT || 5000;
+  console.log(`✅ Swagger UI tersedia di http://localhost:${PORT}/api-docs`);
 };

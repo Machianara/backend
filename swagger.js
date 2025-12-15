@@ -6,24 +6,13 @@
 export const swaggerSpec = {
   openapi: "3.0.0",
   info: {
-    title: "Machinara Ticketing API",
-    description: "API untuk sistem manajemen tiket mesin dan prediksi AI",
+    title: "Machinara API",
+    description: "API untuk prediksi kerusakan mesin dengan AI dan sistem manajemen tiket maintenance mesin yang rusak.",
     version: "1.0.0",
-    contact: {
-      name: "API Support",
-      email: "support@machinara.com"
-    },
-    license: {
-      name: "MIT"
-    }
   },
   servers: [
     {
-      url: "http://localhost:3000",
-      description: "Development Server"
-    },
-    {
-      url: "https://api.machinara.com",
+      url: "https://backend-dev-service.up.railway.app",
       description: "Production Server"
     }
   ],
