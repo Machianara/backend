@@ -482,62 +482,6 @@ export const swaggerSpec = {
     }
   ],
   paths: {
-    "/": {
-      get: {
-        tags: ["Health Check"],
-        summary: "API Status",
-        description: "Cek apakah API sedang berjalan",
-        security: [],
-        responses: {
-          200: {
-            description: "API berjalan dengan baik",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Machinara Ticketing API is running 🚀"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/health": {
-      get: {
-        tags: ["Health Check"],
-        summary: "Health Check",
-        description: "Cek status kesehatan API",
-        security: [],
-        responses: {
-          200: {
-            description: "Status API OK",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    status: {
-                      type: "string",
-                      example: "ok"
-                    },
-                    message: {
-                      type: "string",
-                      example: "Machinara backend running"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/auth/login": {
       post: {
         tags: ["Authentication"],
@@ -1393,10 +1337,6 @@ export const swaggerSpec = {
     }
   },
   tags: [
-    {
-      name: "Health Check",
-      description: "Endpoint untuk mengecek status API"
-    },
     {
       name: "Authentication",
       description: "Endpoint untuk autentikasi dan manajemen user"
