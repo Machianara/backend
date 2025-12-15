@@ -16,6 +16,9 @@ import ticketRoutes from "./src/routes/ticketRoutes.js";
 import autoTicketRoutes from "./src/routes/autoTicketRoutes.js";
 import manualinputRoutes from "./src/routes/manualinputRoutes.js";
 
+// Swagger Documentation
+import { setupSwagger } from "./swaggerSetup.js";
+
 // Load environment vars
 dotenv.config();
 
@@ -35,15 +38,8 @@ sequelize
   .then(() => console.log("✅ Tables synced"))
   .catch((err) => console.error("❌ Table sync failed:", err));
 
-// Root route
-app.get("/", (req, res) => {
-  res.send("Machinara Ticketing API is running 🚀");
-});
-
-// Health check
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", message: "Machinara backend running" });
-});
+// Setup Swagger Documentation
+setupSwagger(app);
 
 // Register Routes
 app.use("/auth", authRoute);
